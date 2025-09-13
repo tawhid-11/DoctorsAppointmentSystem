@@ -1,0 +1,79 @@
+﻿@model IEnumerable<SlotTemplate>
+@{
+    ViewData["Title"] = "Book Appointment";
+}
+
+<div class="container mt-4">
+
+    <h2 class="mb-4">Book an Appointment</h2>
+
+    <!-- Success/Error Notifications -->
+    @if (ViewBag.Success != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @ViewBag.Success
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @ViewBag.Error
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <!-- Book Available Slots -->
+    <div class="row">
+        @foreach (var slot in Model)
+        {
+            <div class="col-md-3 mb-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5 class="card-title">@slot.SlotTime</h5>
+                        <form asp-action="Book" method="post">
+                            <input type="hidden" name="slotId" value="@slot.SlotTemplateId" />
+                            <input type="date" name="appointmentDate" value="@DateTime.Today.ToString("yyyy-MM-dd")" class="form-control mb-2" />
+                            <button type="submit" class="btn btn-primary btn-sm w-100">Book</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <hr />
+
+    <!-- List Booked Appointments -->
+    <h3 class="mt-4">Your Appointments</h3>
+    <table class="table table-bordered mt-2">
+        <thead>
+            <tr>
+                <th>Slot</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var appointment in ViewBag.Appointments as List<Appointment>)
+            {
+                <tr>
+                    <td>@appointment.SlotTemplate?.SlotTime</td>
+                    <td>@appointment.AppointmentDate.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td>@appointment.Status</td>
+                    <td>
+                        @if (appointment.Status == "Booked")
+                        {
+                            <form asp-action="Cancel" method="post">
+                                <input type="hidden" name="appointmentId" value="@appointment.AppointmentId" />
+                                <button type="submit" class="btn btn-danger btn-sm">Cancel</button>
+                            </form>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

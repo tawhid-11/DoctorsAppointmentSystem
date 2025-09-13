@@ -1,0 +1,60 @@
+﻿@model List<DoctorsAppointmentSystem.Models.DoctorAppointmentViewModel>
+@{
+    ViewData["Title"] = "Doctor Appointments";
+}
+
+<div class="container mt-5">
+    <h2 class="mb-4">Your Appointments</h2>
+
+    <!-- Daily Summary Link -->
+    <div class="mb-3">
+        <a asp-action="DoctorDailySummary" asp-controller="Appointment" class="btn btn-info">
+            View Daily Appointment Summary
+        </a>
+    </div>
+
+    <!-- Success/Error Notifications -->
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">@TempData["Error"]</div>
+    }
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">@TempData["Success"]</div>
+    }
+
+    <!-- Appointments Table -->
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Slot</th>
+                <th>Patient</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var app in Model)
+            {
+                <tr>
+                    <td>@app.AppointmentDate.ToString("yyyy-MM-dd")</td>
+                    <td>@app.SlotTime</td>
+                    <td>@app.PatientName</td>
+                    <td>@app.Status</td>
+                    <td>
+                        @if (app.Status != "Cancelled")
+                        {
+                            <form asp-action="Cancel" method="post" class="d-inline">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="appointmentId" value="@app.AppointmentId" />
+                                <button type="submit" class="btn btn-danger btn-sm">Cancel</button>
+                            </form>
+                        }
+                        <a asp-action="Reschedule" asp-route-id="@app.AppointmentId" class="btn btn-warning btn-sm">Reschedule</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

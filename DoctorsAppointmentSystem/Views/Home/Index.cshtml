@@ -1,0 +1,41 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject UserManager<IdentityUser> UserManager
+@inject SignInManager<IdentityUser> SignInManager
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 text-center p-4 border rounded shadow-sm bg-light">
+            
+            <h1 class="display-4 mb-3">Welcome to Clinic Appointment System</h1>
+
+            @if (User.Identity.IsAuthenticated)
+            {
+                <p class="lead">Hello, <strong>@User.Identity.Name</strong>!</p>
+                <div class="mt-4">
+                    <a asp-controller="Appointment" asp-action="Index" class="btn btn-primary btn-lg me-2">Book Appointment</a>
+                    
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <a asp-controller="Admin" asp-action="Dashboard" class="btn btn-warning btn-lg me-2">Admin Dashboard</a>
+                    }
+                    
+                    <form asp-controller="Account" asp-action="Logout" method="post" style="display:inline;">
+                        <button type="submit" class="btn btn-danger btn-lg">Logout</button>
+                    </form>
+                </div>
+            }
+            else
+            {
+                <p class="lead">Please log in or register to book appointments.</p>
+                <div class="mt-4">
+                    <a asp-controller="Account" asp-action="Login" class="btn btn-success btn-lg me-2">Login</a>
+                    <a asp-controller="Account" asp-action="Register" class="btn btn-info btn-lg">Register</a>
+                </div>
+            }
+        </div>
+    </div>
+</div>

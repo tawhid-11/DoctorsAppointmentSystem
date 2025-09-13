@@ -1,0 +1,55 @@
+﻿@model Appointment
+@{
+    ViewData["Title"] = "Reschedule Appointment";
+    var slots = ViewBag.Slots as List<SlotTemplate>;
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 border rounded shadow-sm p-4 bg-light">
+
+            <h2 class="mb-4 text-center">Reschedule Appointment</h2>
+
+            @* Show TempData notifications *@
+            @if (TempData["Error"] != null)
+            {
+                <div class="alert alert-danger">@TempData["Error"]</div>
+            }
+            @if (TempData["Success"] != null)
+            {
+                <div class="alert alert-success">@TempData["Success"]</div>
+            }
+
+            <form asp-action="Reschedule" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="appointmentId" value="@Model.AppointmentId" />
+
+                <div class="form-group mb-3">
+                    <label>Date</label>
+                    <input type="date" name="appointmentDate" value="@Model.AppointmentDate.ToString("yyyy-MM-dd")" class="form-control" required />
+                </div>
+
+                <div class="form-group mb-3">
+                    <label>Slot</label>
+                    <select name="slotId" class="form-control" required>
+                        @foreach (var slot in slots)
+                        {
+                            if (slot.SlotTemplateId == Model.SlotTemplateId)
+                            {
+                                <option value="@slot.SlotTemplateId" selected>@slot.SlotTime</option>
+                            }
+                            else
+                            {
+                                <option value="@slot.SlotTemplateId">@slot.SlotTime</option>
+                            }
+                        }
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100">Reschedule</button>
+            </form>
+
+           
+        </div>
+    </div>
+</div>

@@ -1,0 +1,77 @@
+﻿@model IEnumerable<DoctorsAppointmentSystem.Models.DoctorDailySummaryViewModel>
+
+@{
+    ViewData["Title"] = "Today's Appointments";
+    var booked = Model.Where(a => string.Equals(a.Status, "Booked", StringComparison.OrdinalIgnoreCase)).ToList();
+    var cancelled = Model.Where(a => string.Equals(a.Status, "Cancelled", StringComparison.OrdinalIgnoreCase)).ToList();
+
+}
+
+<div class="container mt-5">
+    <h2>Today's Appointments</h2>
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">@TempData["Error"]</div>
+    }
+
+    <!-- Summary Counts -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card text-white bg-success mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Booked Appointments</h5>
+                    <p class="card-text">@booked.Count</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card text-white bg-danger mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Cancelled Appointments</h5>
+                    <p class="card-text">@cancelled.Count</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Booked Appointments Table -->
+    <h4>Booked Appointments</h4>
+    <table class="table table-bordered mb-4">
+        <thead>
+            <tr>
+                <th>Time Slot</th>
+                <th>Patient Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var app in booked)
+            {
+                <tr>
+                    <td>@app.SlotTime</td>
+                    <td>@app.PatientName</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <!-- Cancelled Appointments Table -->
+    <h4>Cancelled Appointments</h4>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Time Slot</th>
+                <th>Patient Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var app in cancelled)
+            {
+                <tr>
+                    <td>@app.SlotTime</td>
+                    <td>@app.PatientName</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
